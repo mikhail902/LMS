@@ -27,13 +27,13 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+
 class CourseSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Course"""
+
     class Meta:
         model = Course
-        fields = {
-            'title',
-            'descriptions',
-        }
+        fields = '__all__'
 
 class Lesson(models.Model):
     """Модель урока"""
@@ -71,10 +71,10 @@ class Lesson(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+
 class LessonSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели Lesson"""
+
     class Meta:
         model = Lesson
-        fields = {
-            'title',
-            'descriptions',
-        }
+        fields = '__all__'
