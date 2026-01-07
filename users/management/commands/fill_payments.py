@@ -1,9 +1,11 @@
-from django.core.management.base import BaseCommand
+import random
+from datetime import datetime, timedelta
+
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
+
 from courses.models import Course, Lesson
 from users.models import Payment
-from datetime import datetime, timedelta
-import random
 
 User = get_user_model()
 

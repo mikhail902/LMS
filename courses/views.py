@@ -1,19 +1,12 @@
 from django.views.generic import DetailView, ListView, TemplateView
-from rest_framework.generics import (
-    CreateAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-    DestroyAPIView,
-)
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView)
 from rest_framework.viewsets import ModelViewSet
 
 from courses.models import Course, Lesson
-from courses.serializer import (
-    LessonSerializer,
-    CourseSerializer,
-    LessonDetailSerializer,
-)
+from courses.serializer import (CourseSerializer, LessonDetailSerializer,
+                                LessonSerializer)
 from courses.services import get_lesson_by_course
 
 
