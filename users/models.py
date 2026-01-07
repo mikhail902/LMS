@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -17,16 +16,8 @@ class User(AbstractUser):
             "unique": _("Пользователь с таким email уже существует."),
         },
     )
-    phone_regex = RegexValidator(
-        regex=r"^\+?1?\d{9,15}$",
-        message="Номер телефона должен быть в формате: '+999999999'. Максимум 15 цифр.",
-    )
     phone = models.CharField(
-        _("phone number"),
-        validators=[phone_regex],
-        max_length=17,
-        blank=True,
-        null=True,
+        max_length=35, blank=True, null=True, help_text="Введите номер телефона"
     )
     city = models.CharField(_("city"), max_length=100, blank=True, null=True)
 
@@ -44,18 +35,43 @@ class User(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
-    def __str__(self):
-        return self.email
 
-    def get_full_name(self):
-        """
-        Возвращает полное имя пользователя
-        """
-        full_name = f"{self.first_name} {self.last_name}"
-        return full_name.strip()
+class Payment(models.Model):
+    PAYMENT_METHOD_CHOICES = [
+        ("cash", "Наличные"),
+        ("transfer", "Перевод на счет"),
+    ]
 
-    def get_short_name(self):
-        """
-        Возвращает короткое имя пользователя
-        """
-        return self.first_name
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="payments",
+        verbose_name="Пользователь",
+    )
+    payment_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата оплаты")
+    paid_course = models.ForeignKey(
+        "courses.Course",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="payments",
+        verbose_name="Оплаченный курс",
+    )
+    paid_lesson = models.ForeignKey(
+        "courses.Lesson",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="payments",
+        verbose_name="Оплаченный урок",
+    )
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="Сумма оплаты"
+    )
+    payment_method = models.CharField(
+        max_length=10, choices=PAYMENT_METHOD_CHOICES, verbose_name="Способ оплаты"
+    )
+
+    class Meta:
+        verbose_name = "Платеж"
+        verbose_name_plural = "Платежи"
