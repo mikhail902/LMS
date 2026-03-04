@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-
-
+from users.models import User
 class Course(models.Model):
     """Модель курса"""
 
@@ -19,6 +18,7 @@ class Course(models.Model):
     description = models.TextField(
         _("description"), help_text=_("Подробное описание курса")
     )
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses', null=True, blank=True)
 
     class Meta:
         verbose_name = _("course")
@@ -56,6 +56,7 @@ class Lesson(models.Model):
         verbose_name=_("course"),
         help_text=_("Курс, к которому принадлежит урок"),
     )
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lessons', null=True, blank=True)
 
     class Meta:
         verbose_name = _("lesson")
