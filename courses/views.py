@@ -54,6 +54,7 @@ class LessonCreateApiView(CreateAPIView):
     serializer_class = LessonSerializer
 
 
+
 class LessonListApiView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer

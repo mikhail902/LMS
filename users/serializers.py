@@ -6,7 +6,6 @@ from .models import Payment, User
 
 
 class PaymentSerializer(serializers.ModelSerializer):
-    # Добавляем дополнительные поля для удобства
     user_email = serializers.EmailField(source="user.email", read_only=True)
     user_full_name = serializers.SerializerMethodField()
     course_title = serializers.CharField(
@@ -36,3 +35,8 @@ class PaymentSerializer(serializers.ModelSerializer):
             "get_payment_method_display",
         ]
         read_only_fields = ["payment_date"]
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"

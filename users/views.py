@@ -1,10 +1,11 @@
 from django_filters import rest_framework as filters
 from rest_framework import permissions, viewsets
+from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from .filters import PaymentFilter
 from .models import Payment, User
-from .serializers import PaymentSerializer
+from .serializers import PaymentSerializer, UserSerializer
 
 
 class PaymentViewSet(viewsets.ModelViewSet):
@@ -34,3 +35,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Автоматически привязываем текущего пользователя к платежу"""
         serializer.save(user=self.request.user)
+
+class UserCreateApiView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        user.set_password(user.password)
+        user.save()
