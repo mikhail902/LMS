@@ -4,7 +4,7 @@ from rest_framework.routers import SimpleRouter
 from .apps import CoursesConfig
 from .views import (CourseViewSet, LessonCreateApiView, LessonDestroyApiView,
                     LessonListApiView, LessonRetrieveApiView,
-                    LessonUpdateApiView, ModeratorLessonListView)
+                    LessonUpdateApiView, ModeratorLessonListView, SubscriptionAPIView)
 
 app_name = CoursesConfig.name
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path("lessons/<int:pk>/delete", LessonDestroyApiView.as_view(), name="lesson_delete"),
     path("lessons/<int:pk>/update", LessonUpdateApiView.as_view(), name="lesson_update"),
     path('moderator/lessons/', ModeratorLessonListView.as_view(), name='moderator-lessons'),
+    path('subscription/', SubscriptionAPIView.as_view(), name='subscription'),
 ]
 
 urlpatterns += routers.urls
