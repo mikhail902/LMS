@@ -1,9 +1,15 @@
 [tool.poetry]
-name = "drf"
+name = "drf"  # можно оставить или поменять на "lms"
 version = "0.1.0"
-description = ""
+description = "Django LMS project"
 authors = ["mike"]
-readme = "README.md"
+readme = "readme.md"
+packages = [
+    {include = "config"},  # твоя папка с настройками Django
+    {include = "courses"},
+    {include = "users"},
+    {include = "manage.py"}  # если хочешь включить manage.py
+]
 
 [tool.poetry.dependencies]
 python = "^3.13"
@@ -16,7 +22,7 @@ pillow = "^12.1.0"
 python-dotenv = "^1.2.1"
 dotenv = "^0.9.9"
 django-filter = "^25.2"
-
+djangorestframework-simplejwt = "^5.5.1"
 
 [build-system]
 requires = ["poetry-core"]
