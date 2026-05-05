@@ -17,6 +17,14 @@ from courses.serializer import (CourseSerializer, LessonDetailSerializer,
 from courses.services import get_lesson_by_course
 from courses.permissions import IsModerator, IsOwner
 from .paginators import CourseLessonPagination
+from users.models import Payment
+from courses.serializer import PaymentSerializer
+from courses.services import (
+    create_stripe_product,
+    create_stripe_price,
+    create_stripe_session,
+    get_stripe_session_status,
+)
 
 
 class MainView(TemplateView):
@@ -68,6 +76,8 @@ class CourseViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Course.objects.none()
         user = self.request.user
         if user.groups.filter(name='moderators').exists():
             return Course.objects.all()
@@ -89,6 +99,8 @@ class LessonListApiView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Lesson.objects.none()
         user = self.request.user
         if user.groups.filter(name='moderators').exists():
             return Lesson.objects.all()
@@ -103,6 +115,8 @@ class LessonRetrieveApiView(RetrieveAPIView):
         return LessonDetailSerializer
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Lesson.objects.none()
         user = self.request.user
         if user.groups.filter(name='moderators').exists():
             return Lesson.objects.all()
@@ -126,7 +140,6 @@ class ModeratorLessonListView(ListAPIView):
     serializer_class = LessonSerializer
     pagination_class = CourseLessonPagination
     permission_classes = [IsAuthenticated, IsModerator]
-
 
 
 class SubscriptionAPIView(APIView):
@@ -153,3 +166,84 @@ class SubscriptionAPIView(APIView):
             message = 'Подписка добавлена'
 
         return Response({'message': message})
+
+
+class PaymentCreateAPIView(APIView):
+    """Создание платежа и получение ссылки на оплату"""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        course_id = request.data.get('course_id')
+        amount = request.data.get('amount')
+
+        if not course_id or not amount:
+            return Response(
+                {'error': 'Не указан course_id или amount'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            course = Course.objects.get(pk=course_id)
+        except Course.DoesNotExist:
+            return Response(
+                {'error': 'Курс не найден'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            product = create_stripe_product(course)
+            price = create_stripe_price(float(amount), product.id)
+            session = create_stripe_session(price.id)
+        except Exception as e:
+            return Response(
+                {'error': f'Ошибка Stripe: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        payment = Payment.objects.create(
+            user=user,
+            paid_course=course,
+            amount=amount,
+            session_id=session.id,
+            payment_url=session.url,
+            payment_method='transfer',
+        )
+
+        serializer = PaymentSerializer(payment)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PaymentStatusAPIView(APIView):
+    """Проверка статуса платежа"""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, payment_id):
+        try:
+            payment = Payment.objects.get(pk=payment_id, user=request.user)
+        except Payment.DoesNotExist:
+            return Response(
+                {'error': 'Платеж не найден'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if not payment.session_id:
+            return Response(
+                {'error': 'ID сессии не найден'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            session = get_stripe_session_status(payment.session_id)
+        except Exception as e:
+            return Response(
+                {'error': f'Ошибка Stripe: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        return Response({
+            'payment_id': payment.id,
+            'status': session.payment_status,
+            'amount': str(payment.amount),
+            'course': payment.paid_course.title if payment.paid_course else None,
+        })
