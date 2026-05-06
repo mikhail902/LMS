@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-
+from courses.tasks import send_course_update_email
 from courses.models import Course, Lesson, Subscription
 from courses.serializer import (CourseSerializer, LessonDetailSerializer,
                                 LessonSerializer)
@@ -62,6 +62,10 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = CourseLessonPagination
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        send_course_update_email.delay(course.id)
 
     def get_permissions(self):
         if self.action == 'create':
