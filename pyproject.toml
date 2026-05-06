@@ -23,6 +23,10 @@ python-dotenv = "^1.2.1"
 dotenv = "^0.9.9"
 django-filter = "^25.2"
 djangorestframework-simplejwt = "^5.5.1"
+drf-yasg = "^1.21.15"
+django-cors-headers = "^4.9.0"
+requests = "^2.33.1"
+stripe = "^15.1.0"
 
 [build-system]
 requires = ["poetry-core"]
