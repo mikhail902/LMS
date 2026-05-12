@@ -17,7 +17,7 @@ class Course(models.Model):
         null=True,
         help_text=_("Превью-изображение курса"),
     )
-
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
     description = models.TextField(
         _("description"), help_text=_("Подробное описание курса")
     )
