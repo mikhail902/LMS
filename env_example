@@ -24,3 +24,7 @@ FLOWER_PASSWORD=flower_password
 
 # Database URL (for Django)
 DATABASE_URL=""
+
+# Docker Hub (for production)
+DOCKER_HUB_USERNAME=your-dockerhub-username
+IMAGE_TAG=latest
