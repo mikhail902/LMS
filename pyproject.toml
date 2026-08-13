@@ -1,18 +1,18 @@
 [tool.poetry]
-name = "drf"  # можно оставить или поменять на "lms"
+name = "drf"
 version = "0.1.0"
 description = "Django LMS project"
 authors = ["mike"]
 readme = "readme.md"
 packages = [
-    {include = "config"},  # твоя папка с настройками Django
+    {include = "config"},
     {include = "courses"},
     {include = "users"},
-    {include = "manage.py"}  # если хочешь включить manage.py
+    {include = "manage.py"}
 ]
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.10"
 djangorestframework = "^3.16.1"
 black = "^25.12.0"
 isort = "^7.0.0"
@@ -36,3 +36,25 @@ coverage = "^7.13.5"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 127
+target-version = ['py310', 'py311', 'py312']
+
+[tool.isort]
+profile = "black"
+line_length = 127
+
+[tool.flake8]
+max-line-length = 127
+max-complexity = 10
+exclude = [
+    ".git",
+    "__pycache__",
+    "*.pyc",
+    "migrations",
+    "venv",
+    ".venv",
+    "env",
+    ".env",
+]
