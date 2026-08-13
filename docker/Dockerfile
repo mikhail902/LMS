@@ -9,12 +9,12 @@ RUN apt-get update && apt-get install -y \
     netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir poetry
+RUN pip install --no-cache-dir poetry==1.8.3
 
 COPY pyproject.toml poetry.lock ./
 
 RUN poetry config virtualenvs.create false && \
-    poetry install --no-interaction --no-ansi --no-root --without dev
+    poetry install --no-interaction --no-ansi --no-root
 
 COPY . .
 
