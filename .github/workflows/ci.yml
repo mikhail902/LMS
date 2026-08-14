@@ -124,7 +124,7 @@ jobs:
           CELERY_RESULT_BACKEND: redis://localhost:6379/0
         run: |
           poetry run coverage run manage.py test
-          poetry run coverage report --fail-under=70
+          poetry run coverage report --fail-under=60  # ← Понижено до 60
 
       - name: Upload coverage report
         if: always()

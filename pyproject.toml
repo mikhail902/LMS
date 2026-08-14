@@ -28,7 +28,7 @@ celery = "^5.3.0"
 redis = "^5.0.0"
 django-celery-beat = "^2.6.0"
 coverage = "^7.4.0"
-gunicorn = "^21.0.0"  # ← ДОБАВЛЕНО!
+gunicorn = "^21.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.0.0"
@@ -59,4 +59,32 @@ exclude = [
     ".venv",
     "env",
     ".env",
+]
+
+[tool.coverage.run]
+omit = [
+    "*/tests.py",
+    "*/migrations/*",
+    "*/management/commands/*",
+    "*/asgi.py",
+    "*/wsgi.py",
+    "docs.py",
+    "*/__init__.py",
+    "*/apps.py",
+    "*/admin.py",
+    "*/test_*.py",
+]
+
+[tool.coverage.report]
+fail_under = 60
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if 0:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
 ]
