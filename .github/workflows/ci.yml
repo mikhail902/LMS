@@ -107,6 +107,8 @@ jobs:
           DATABASE_PASSWORD: test_password
           DATABASE_HOST: localhost
           DATABASE_PORT: 5432
+          SECRET_KEY: django-insecure-test-key-for-ci-cd-please-change-in-production
+          DEBUG: False
         run: poetry run python manage.py migrate
 
       - name: Run tests with coverage
@@ -116,6 +118,8 @@ jobs:
           DATABASE_PASSWORD: test_password
           DATABASE_HOST: localhost
           DATABASE_PORT: 5432
+          SECRET_KEY: django-insecure-test-key-for-ci-cd-please-change-in-production
+          DEBUG: False
           CELERY_BROKER_URL: redis://localhost:6379/0
           CELERY_RESULT_BACKEND: redis://localhost:6379/0
         run: |
@@ -150,7 +154,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/Dockerfile  # ← Исправлено: путь к Dockerfile
+          file: ./docker/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/drf-app:${{ github.sha }}
@@ -174,19 +178,14 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd /opt/drf-app || exit 1
             
-            # Pull latest images
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/drf-app:${{ github.sha }}
             
-            # Update .env with new image tag
             sed -i "s/IMAGE_TAG=.*/IMAGE_TAG=${{ github.sha }}/" .env || echo "IMAGE_TAG=${{ github.sha }}" >> .env
             
-            # Restart services
             docker-compose -f docker/docker-compose.prod.yml down
             docker-compose -f docker/docker-compose.prod.yml up -d
             
-            # Clean up unused images
             docker image prune -f
             
-            # Show status
             docker-compose -f docker/docker-compose.prod.yml ps
           EOF
