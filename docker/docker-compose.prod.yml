@@ -3,7 +3,7 @@ services:
     image: postgres:15
     container_name: drf_db
     env_file:
-      - .env
+      - ../.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -42,7 +42,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - ../.env
     depends_on:
       db:
         condition: service_healthy
@@ -59,7 +59,7 @@ services:
       sh -c "./wait-for-db.sh db 5432 &&
              celery -A config worker --loglevel=info"
     env_file:
-      - .env
+      - ../.env
     depends_on:
       db:
         condition: service_healthy
@@ -76,7 +76,7 @@ services:
       sh -c "./wait-for-db.sh db 5432 &&
              celery -A config beat --loglevel=info"
     env_file:
-      - .env
+      - ../.env
     depends_on:
       db:
         condition: service_healthy
@@ -90,7 +90,7 @@ services:
     image: nginx:alpine
     container_name: drf_nginx
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../nginx.conf:/etc/nginx/conf.d/default.conf
       - static_volume:/app/static
       - media_volume:/app/media
     ports:

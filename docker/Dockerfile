@@ -1,4 +1,4 @@
-FROM python:3.10-slim  # ← Оставляем 3.10, если в pyproject.toml ^3.10
+FROM python:3.13-slim
 
 WORKDIR /app
 
