@@ -4,6 +4,21 @@ __pycache__/
 *$py.class
 *.so
 .Python
+*.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+develop-eggs/
+downloads/
+eggs/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+
+# Virtual environments
 env/
 venv/
 .venv/
@@ -18,13 +33,14 @@ db.sqlite3
 db.sqlite3-journal
 /static/
 /media/
-
+/staticfiles/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
@@ -46,6 +62,37 @@ htmlcov/
 *.pid
 docker-compose.override.yml
 
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Tests
+/tests/
+/test_*.py
+*/tests.py
+*/test_*.py
+
 # Misc
 *.db
 *.sqlite3
+*.pyo
+*.pyd
+
+# CI/CD
+.github/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp

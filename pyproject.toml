@@ -1,38 +1,62 @@
 [tool.poetry]
-name = "drf"  # можно оставить или поменять на "lms"
+name = "drf"
 version = "0.1.0"
 description = "Django LMS project"
 authors = ["mike"]
-readme = "readme.md"
+readme = "README.md"
 packages = [
-    {include = "config"},  # твоя папка с настройками Django
+    {include = "config"},
     {include = "courses"},
     {include = "users"},
-    {include = "manage.py"}  # если хочешь включить manage.py
+    {include = "manage.py"}
 ]
 
 [tool.poetry.dependencies]
-python = "^3.13"
-djangorestframework = "^3.16.1"
-black = "^25.12.0"
-isort = "^7.0.0"
-django = "^6.0"
-psycopg2-binary = "^2.9.11"
-pillow = "^12.1.0"
-python-dotenv = "^1.2.1"
-dotenv = "^0.9.9"
-django-filter = "^25.2"
-djangorestframework-simplejwt = "^5.5.1"
-drf-yasg = "^1.21.15"
-django-cors-headers = "^4.9.0"
-requests = "^2.33.1"
-stripe = "^15.1.0"
-celery = "^5.6.3"
-eventlet = "^0.41.0"
-redis = "^7.4.0"
-django-celery-beat = "^2.9.0"
-coverage = "^7.13.5"
+python = ">=3.10,<3.14"
+django = "^5.0"
+djangorestframework = "^3.15.0"
+django-cors-headers = "^4.3.0"
+django-filter = "^24.0"
+djangorestframework-simplejwt = "^5.3.0"
+drf-yasg = "^1.21.0"
+psycopg2-binary = "^2.9.0"
+pillow = "^10.0.0"
+python-dotenv = "^1.0.0"
+requests = "^2.31.0"
+stripe = "^7.0.0"
+celery = "^5.3.0"
+redis = "^5.0.0"
+django-celery-beat = "^2.6.0"
+coverage = "^7.4.0"
+gunicorn = "^21.0.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.0.0"
+isort = "^5.13.0"
+flake8 = "^7.0.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 127
+target-version = ['py310', 'py311', 'py312', 'py313']
+
+[tool.isort]
+profile = "black"
+line_length = 127
+
+[tool.flake8]
+max-line-length = 127
+max-complexity = 10
+exclude = [
+    ".git",
+    "__pycache__",
+    "*.pyc",
+    "migrations",
+    "venv",
+    ".venv",
+    "env",
+    ".env",
+]

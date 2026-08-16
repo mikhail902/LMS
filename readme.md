@@ -43,11 +43,81 @@
 | **eventlet** | Асинхронность для Windows |
 
 ---
+🛠️ Технологии
+Backend: Django 5.x, Django REST Framework
+
+База данных: PostgreSQL 15
+
+Кэш/брокер: Redis 7
+
+Очереди: Celery 5.x, Celery Beat
+
+Веб-сервер: Gunicorn + Nginx
+
+Контейнеризация: Docker + Docker Compose
+
+CI/CD: GitHub Actions
+
+Платежи: Stripe
+
+Менеджер зависимостей: Poetry
 
 ## 📦 Установка и настройка
 
-### 1. Клонирование репозитория
+# 1. Клонировать репозиторий
+git clone https://github.com/mikhail902/LMS.git
+cd LMS
 
-```bash
-git clone <repository-url>
-cd <project-directory>
+# 2. Скопировать .env файл
+cp .env.template .env
+# Заполнить .env своими значениями
+
+# 3. Установить зависимости
+poetry install
+
+# 4. Применить миграции
+poetry run python manage.py migrate
+
+# 5. Запустить сервер
+poetry run python manage.py runserver
+
+______________________________________________________
+
+# 1. Запустить все сервисы
+docker-compose -f docker/docker-compose.yml up -d
+
+# 2. Применить миграции
+docker-compose -f docker/docker-compose.yml exec web python manage.py migrate
+
+# 3. Создать суперпользователя
+docker-compose -f docker/docker-compose.yml exec web python manage.py createsuperuser
+
+# 4. Остановить все сервисы
+docker-compose -f docker/docker-compose.yml down
+
+______________________________________________________
+
+# 1. Установка Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# 2. Установка Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# 3. Создание директории проекта
+sudo mkdir -p /opt/drf-app
+sudo chown $USER:$USER /opt/drf-app
+
+# 4. Копирование .env файла
+cp .env.template /opt/drf-app/.env
+# Заполнить .env реальными значениями
+
+# 5. Запуск
+cd /opt/drf-app
+docker-compose -f docker/docker-compose.prod.yml up -d
+
+# 6. Проверка статуса
+docker-compose -f docker/docker-compose.prod.yml ps
+docker-compose -f docker/docker-compose.prod.yml logs -f
