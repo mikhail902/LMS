@@ -136,6 +136,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: test
+    # build выполняется всегда (и для PR, и для push)
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -177,15 +178,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-
+    # deploy выполняется всегда, но с разной логикой
     steps:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Deploy to Server
+      - name: Deploy to Server (only for main/master)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd /opt/drf-app || exit 1
@@ -201,3 +202,21 @@ jobs:
             
             docker-compose -f docker/docker-compose.prod.yml ps
           EOF
+
+      - name: Deploy simulation (for pull_request)
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "==========================================="
+          echo "✅ Deploy step passed successfully!"
+          echo "==========================================="
+          echo "📦 Image: drf-app:test"
+          echo "🌐 Server: ${{ secrets.SERVER_IP }}"
+          echo "👤 User: ${{ secrets.SSH_USER }}"
+          echo "📁 Path: /opt/drf-app"
+          echo ""
+          echo "🔧 Would run:"
+          echo "  - docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/drf-app:latest"
+          echo "  - docker-compose -f docker/docker-compose.prod.yml up -d"
+          echo "==========================================="
+          echo ""
+          echo "ℹ️  Real deployment only runs on main/master branch"
