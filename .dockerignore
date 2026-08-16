@@ -1,18 +1,98 @@
-.venv
-*.pyc
-__pycache__
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+develop-eggs/
+downloads/
+eggs/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django
 *.log
-*.sqlite3
-.coverage
-htmlcov
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/static/
+/media/
+/staticfiles/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
 .env
-celerybeat-schedule*
-.git
+.env.local
+.env.*.local
+
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+*.cover
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Git
+.git/
 .gitignore
-Dockerfile
-docker-compose.yml
-readme.md
-poetry.lock
-pyproject.toml
-static/
-media/
+.gitattributes
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Tests
+/tests/
+/test_*.py
+*/tests.py
+*/test_*.py
+
+# Misc
+*.db
+*.sqlite3
+*.pyo
+*.pyd
+
+# CI/CD
+.github/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp

@@ -43,6 +43,24 @@
 | **eventlet** | Асинхронность для Windows |
 
 ---
+🛠️ Технологии
+Backend: Django 5.x, Django REST Framework
+
+База данных: PostgreSQL 15
+
+Кэш/брокер: Redis 7
+
+Очереди: Celery 5.x, Celery Beat
+
+Веб-сервер: Gunicorn + Nginx
+
+Контейнеризация: Docker + Docker Compose
+
+CI/CD: GitHub Actions
+
+Платежи: Stripe
+
+Менеджер зависимостей: Poetry
 
 ## 📦 Установка и настройка
 
